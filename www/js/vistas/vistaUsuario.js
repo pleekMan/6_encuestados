@@ -7,12 +7,6 @@ var VistaUsuario = function(modelo, controlador, elementos) {
   this.elementos = elementos;
   var contexto = this;
 
-  //suscripcion a eventos del modelo
-  this.modelo.votoAgregado.suscribir(function() {
-    console.log("-|| VISTA USUARIO => SUSCRIPCION: PREGUNTA AGREGADA")
-    this.reconstruirLista();
-  });
-
 };
 
 VistaUsuario.prototype = {
@@ -52,13 +46,13 @@ VistaUsuario.prototype = {
     listaPreguntas.html('');
     var contexto = this;
     //var preguntas = this.modelo.preguntas;
-    var preguntas = this.controlador.cargarPreguntas();
+    var preguntas = this.controlador.cargarPreguntas(); // XXXXXXXXXXX PASAR A this.modelo.preguntas
 
     if(preguntas != null){ // localStorage.clear() elimina cualquier cosa guardada.
       preguntas.forEach(function(clave){
         //completar
         //agregar a listaPreguntas un elemento div con valor "clave.textoPregunta", texto "clave.textoPregunta", id "clave.id"
-        var nuevoElemento =$("<div>");
+        var nuevoElemento = $("<div>");
         nuevoElemento.attr("value",clave.textoPregunta);
         nuevoElemento.attr("id",clave.id);
         nuevoElemento.html(clave.textoPregunta);
@@ -96,6 +90,9 @@ VistaUsuario.prototype = {
         $('input[name=' + id + ']').prop('checked',false);
         contexto.controlador.agregarVoto(pregunta,respuestaSeleccionada);
       });
+    contexto.reconstruirLista();
+    contexto.reconstruirGrafico();
+
   },
 
   dibujarGrafico: function(nombre, respuestas){

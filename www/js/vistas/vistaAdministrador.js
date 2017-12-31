@@ -23,6 +23,7 @@ var VistaAdministrador = function(modelo, controlador, elementos) {
     contexto.reconstruirLista();
   });
 
+  //contexto.reconstruirLista();
   /*
   this.modelo.respuestaAgregada.suscribir(function() {
     console.log("-|| VISTA ADMIN => SUSCRIBIENDO FUNCION A EVENTO RespuestaAgregada")
@@ -74,7 +75,7 @@ VistaAdministrador.prototype = {
   reconstruirLista: function() {
     var lista = this.elementos.lista;
     lista.html('');
-    var preguntas = this.controlador.cargarPreguntas();
+    var preguntas = this.modelo.preguntas;
     if(preguntas != null){
       for (var i=0;i<preguntas.length;++i){
         lista.append(this.construirElementoPregunta(preguntas[i]));
@@ -128,11 +129,14 @@ VistaAdministrador.prototype = {
       
       var preguntaSeleccionada = $(".list-group-item.active").attr("id");
 
-      var nuevoNombre = window.prompt("Ingresa el Nuevo Nombre de la Pregunta:");
+      if(preguntaSeleccionada != undefined){
+        var nuevoNombre = window.prompt("Ingresa el Nuevo Nombre de la Pregunta:");
 
-      if(nuevoNombre != ""){
-        contexto.controlador.editarPregunta(preguntaSeleccionada, nuevoNombre);
-      } 
+        
+        if(nuevoNombre != "" && nuevoNombre != null){
+          contexto.controlador.editarPregunta(preguntaSeleccionada, nuevoNombre);
+        } 
+      }
 
     });
 

@@ -11,9 +11,11 @@ var Modelo = function() {
   this.preguntaEditada = new Evento(this);
   this.preguntasTodasBorradas = new Evento(this);
 
-  this.votoAgregado = new Evento(this);
-
+  this.votoAgregado = new Evento(this);  
   //this.respuestaAgregada = new Evento(this);
+
+  this.cargarPreguntas();
+
 };
 
 Modelo.prototype = {
@@ -23,13 +25,21 @@ Modelo.prototype = {
     for (let i = 0; i <  this.preguntas.length; i++)  {
       todosLosIds.push(this.preguntas[i].id);      
     }
-    return Math.max(todosLosIds);
+
+    if(todosLosIds.length != 0){
+      var max = todosLosIds.reduce(function(a, b) {
+        return Math.max(a, b);
+      });
+      return max;
+    } else {
+      return 0;
+    }
   },
 
   //se agrega una pregunta dado un nombre y sus respuestas
   agregarPregunta: function(nombre, respuestas) {
     var id = this.obtenerUltimoId();
-    id++;
+     id++;
     var nuevaPregunta = {'textoPregunta': nombre, 'id': id, 'cantidadPorRespuesta': []};
     
     for (let i = 0; i < respuestas.length; i++) {
@@ -101,7 +111,7 @@ Modelo.prototype = {
   },
 
   borrarTodasPreguntas: function () {
-    this.preguntas.clear();
+    this.preguntas = [];
     localStorage.clear();
     this.preguntasTodasBorradas.notificar();
   },
