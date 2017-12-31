@@ -6,6 +6,9 @@ var Controlador = function(modelo) {
 };
 
 Controlador.prototype = {
+  
+  // ADMIN
+
   agregarPregunta: function(pregunta, respuestas) {
     console.log("-|| CONTROLADOR => AGREGAR PREGUNTA")
     this.modelo.agregarPregunta(pregunta, respuestas);
@@ -14,10 +17,26 @@ Controlador.prototype = {
     console.log("-|| CONTROLADOR => BORRAR PREGUNTA")
     this.modelo.borrarPregunta(preguntaId);
   },
-  /*
-  agregarRespuesta: function(pregunta, respuesta) {
-    console.log("-|| CONTROLADOR => AGREGAR PREGUNTA")
-    this.modelo.agregarPregunta(pregunta, respuesta);
+
+  editarPregunta: function (preguntaId, nombre) {
+    console.log("-|| CONTROLADOR => EDITAR PREGUNTA")
+    this.modelo.editarPregunta(preguntaId, nombre);
   },
-  */
+
+  borrarTodasPreguntas: function () {
+    this.modelo.borrarTodasPreguntas();
+  },
+
+  //===========
+  // USUARIO
+
+  agregarVoto: function(pregunta,respuestaTexto){
+    this.modelo.agregarVoto(pregunta,respuestaTexto);
+  },
+
+  cargarPreguntas: function(){
+    return this.modelo.cargarPreguntas();
+  },
+
+
 };

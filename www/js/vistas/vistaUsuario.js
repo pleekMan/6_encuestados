@@ -8,14 +8,11 @@ var VistaUsuario = function(modelo, controlador, elementos) {
   var contexto = this;
 
   //suscripcion a eventos del modelo
-  this.modelo.preguntaAgregada.suscribir(function() {
+  this.modelo.votoAgregado.suscribir(function() {
     console.log("-|| VISTA USUARIO => SUSCRIPCION: PREGUNTA AGREGADA")
-    contexto.reconstruirLista();
+    this.reconstruirLista();
   });
 
-  this.modelo.preguntaBorrada.suscribir(function() {
-    console.log("-|| VISTA USUARIO => SUSCRIPCION: PREGUNTA BORRADA")
-  });
 };
 
 VistaUsuario.prototype = {
@@ -37,14 +34,16 @@ VistaUsuario.prototype = {
     var contexto = this;
     //obtiene las preguntas del local storage
     var preguntas = this.modelo.preguntas;
-    preguntas.forEach(function(clave){
-      var listaParaGrafico = [[clave.textoPregunta, 'Cantidad']];
-      var respuestas = clave.cantidadPorRespuesta;
-      respuestas.forEach (function(elemento) {
-        listaParaGrafico.push([elemento.textoRespuesta,elemento.cantidad]);
-      });
-      contexto.dibujarGrafico(clave.textoPregunta, listaParaGrafico);
-    })
+    if(preguntas != null){
+      preguntas.forEach(function(clave){
+        var listaParaGrafico = [[clave.textoPregunta, 'Cantidad']];
+        var respuestas = clave.cantidadPorRespuesta;
+        respuestas.forEach (function(elemento) {
+          listaParaGrafico.push([elemento.textoRespuesta,elemento.cantidad]);
+        });
+        contexto.dibujarGrafico(clave.textoPregunta, listaParaGrafico);
+      })
+    }
   },
 
 
@@ -52,13 +51,24 @@ VistaUsuario.prototype = {
     var listaPreguntas = this.elementos.listaPreguntas;
     listaPreguntas.html('');
     var contexto = this;
-    var preguntas = this.modelo.preguntas;
-    preguntas.forEach(function(clave){
-      //completar
-      //agregar a listaPreguntas un elemento div con valor "clave.textoPregunta", texto "clave.textoPregunta", id "clave.id"
-      var respuestas = clave.cantidadPorRespuesta;
-      contexto.mostrarRespuestas(listaPreguntas,respuestas, clave);
-    })
+    //var preguntas = this.modelo.preguntas;
+    var preguntas = this.controlador.cargarPreguntas();
+
+    if(preguntas != null){ // localStorage.clear() elimina cualquier cosa guardada.
+      preguntas.forEach(function(clave){
+        //completar
+        //agregar a listaPreguntas un elemento div con valor "clave.textoPregunta", texto "clave.textoPregunta", id "clave.id"
+        var nuevoElemento =$("<div>");
+        nuevoElemento.attr("value",clave.textoPregunta);
+        nuevoElemento.attr("id",clave.id);
+        nuevoElemento.html(clave.textoPregunta);
+
+        listaPreguntas.append(nuevoElemento);
+        
+        var respuestas = clave.cantidadPorRespuesta;
+        contexto.mostrarRespuestas(listaPreguntas,respuestas, clave);
+      })
+    }
   },
 
   //muestra respuestas

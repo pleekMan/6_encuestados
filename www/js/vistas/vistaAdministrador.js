@@ -15,6 +15,14 @@ var VistaAdministrador = function(modelo, controlador, elementos) {
     contexto.reconstruirLista();
   });
 
+  this.modelo.preguntaEditada.suscribir(function() {
+    contexto.reconstruirLista();
+  });
+
+  this.modelo.preguntasTodasBorradas.suscribir(function() {
+    contexto.reconstruirLista();
+  });
+
   /*
   this.modelo.respuestaAgregada.suscribir(function() {
     console.log("-|| VISTA ADMIN => SUSCRIBIENDO FUNCION A EVENTO RespuestaAgregada")
@@ -48,7 +56,7 @@ VistaAdministrador.prototype = {
 
     var textoRespuestas = "";
     for (let i = 0; i < pregunta.cantidadPorRespuesta.length; i++) {
-      textoRespuestas += pregunta.cantidadPorRespuesta[i] + ", ";
+      textoRespuestas += pregunta.cantidadPorRespuesta[i].textoRespuesta + ", ";
     }
     textoRespuestas = textoRespuestas.slice(0,-2);
     interiorItem.find('small').text(textoRespuestas);
@@ -66,9 +74,11 @@ VistaAdministrador.prototype = {
   reconstruirLista: function() {
     var lista = this.elementos.lista;
     lista.html('');
-    var preguntas = this.modelo.preguntas;
-    for (var i=0;i<preguntas.length;++i){
-      lista.append(this.construirElementoPregunta(preguntas[i]));
+    var preguntas = this.controlador.cargarPreguntas();
+    if(preguntas != null){
+      for (var i=0;i<preguntas.length;++i){
+        lista.append(this.construirElementoPregunta(preguntas[i]));
+      }
     }
   },
 
@@ -77,6 +87,7 @@ VistaAdministrador.prototype = {
     var contexto = this;
 
     //asociacion de eventos a boton
+
     //AGREGAR PREGUNTA
     e.botonAgregarPregunta.click(function() {
       var value = e.pregunta.val();
@@ -94,12 +105,14 @@ VistaAdministrador.prototype = {
     });
 
     //asociar el resto de los botones a eventos
+
     //AGREGAR RESPUESTA solo en VISTA
     e.botonAgregarRespuesta.click(function () {
       console.log("-|| Clicking boton AgregarRespuesta");
       $("#respuesta").append('<input type="text" class="form-control" name="option[]" />');
     });
 
+    // BORRAR PREGUNTA
     e.botonBorrarPregunta.click(function () {
       console.log("-|| Clicking boton BorrarPregunta");
       
@@ -107,9 +120,25 @@ VistaAdministrador.prototype = {
       console.log("-|| Pregunta Seleccionada: " + preguntaSeleccionada);
 
       contexto.controlador.borrarPregunta(preguntaSeleccionada);
+    });
 
+    // EDITAR PREGUNTA
+    e.botonEditarPregunta.click(function () {
+      console.log("-|| Clicking boton Editar Pregunta");
+      
+      var preguntaSeleccionada = $(".list-group-item.active").attr("id");
+
+      var nuevoNombre = window.prompt("Ingresa el Nuevo Nombre de la Pregunta:");
+
+      if(nuevoNombre != ""){
+        contexto.controlador.editarPregunta(preguntaSeleccionada, nuevoNombre);
+      } 
 
     });
+
+    e.borrarTodo.click(function (params) {
+      contexto.controlador.borrarTodasPreguntas();
+    })
   },
 
   limpiarFormulario: function(){
